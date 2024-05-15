@@ -1,11 +1,40 @@
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from bot_app.database.models import Base
+import asyncpg
+import asyncio
+import os
+
+from dotenv import load_dotenv
 
 
-engine = create_async_engine(url="sqlite+aiosqlite:///db.sqlite3")
-async_session = async_sessionmaker(engine)
+load_dotenv()
 
 
-async def async_main():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+
+
+async def setup_database() -> None:
+    try:
+        connection = await asyncpg.connect(
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST
+        )
+
+        await connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(255) UNIQUE
+            )
+            """
+        )
+
+    except Exception as _ex:
+        print(f"[INFO] Error while connecting to PostgreSQL, {_ex}")
+
+
+if __name__ == "__main__":
+    asyncio.run(setup_database())
