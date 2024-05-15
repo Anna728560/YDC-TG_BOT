@@ -1,23 +1,46 @@
-from sqlalchemy import select
+import os
+import asyncpg
 
-from bot_app.database.db_config import async_session
-from bot_app.database.models import User
+from dotenv import load_dotenv
 
 
-async def set_user(tg_id: int) -> None:
+load_dotenv()
+
+
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+
+
+async def set_user(username: str) -> None:
     """
     Adds a new user to the database
-    if the user with the specified Telegram ID doesn't exist.
+    if the user with the specified Username doesn't exist.
 
     Parameters:
-        tg_id (int): Telegram ID of the user.
+        username (str): Username of the user.
 
     Returns:
         None
     """
-    async with async_session() as session:
-        user = await session.scalar(select(User).where(User.id == tg_id))
+    try:
+        connection = await asyncpg.connect(
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST
+        )
 
-        if not user:
-            session.add(User(tg_id=tg_id))
-            await session.commit()
+        await connection.execute(
+            """
+            INSERT INTO users (username)
+            VALUES ($1)
+            ON CONFLICT (username) DO UPDATE
+            SET username = EXCLUDED.username
+            """,
+            username
+        )
+
+    except Exception as _ex:
+        print(f"[INFO] Error while connecting to PostgreSQL, {_ex}")
