@@ -1,8 +1,8 @@
 from aiogram import Router
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-import bot_app.database.requests as rq
+from bot_app.database import db_requests as rq
 
 router = Router()
 
