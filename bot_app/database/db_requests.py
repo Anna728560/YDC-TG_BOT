@@ -20,6 +20,7 @@ async def set_user(username: str, user_id: int) -> None:
 
     Parameters:
         username (str): Username of the user.
+        user_id (int): User ID of the user.
 
     Returns:
         None
