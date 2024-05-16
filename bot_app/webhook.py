@@ -62,6 +62,7 @@ app.router.add_post(f"/{BOT_TOKEN}", handle_webhook)
 if __name__ == "__main__":
     try:
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+        app.on_shutdown.append(on_shutdown)
         app.on_startup.append(on_startup)
         web.run_app(
             app,
