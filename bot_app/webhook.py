@@ -20,7 +20,7 @@ load_dotenv()
 
 BOT_TOKEN = getenv("BOT_TOKEN")
 NGROK = getenv("NGROK")
-NG_PORT = getenv("NG_PORT")
+
 
 
 dp = Dispatcher()
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         web.run_app(
             app,
             host="0.0.0.0",
-            port=int(NG_PORT)
+            port=8080
         )
     except KeyboardInterrupt:
         print("Shutting down")
