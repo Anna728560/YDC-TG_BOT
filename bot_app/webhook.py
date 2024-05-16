@@ -19,9 +19,9 @@ from trello_config.trello_board import setup_trello_board
 load_dotenv()
 
 BOT_TOKEN = getenv("BOT_TOKEN")
-TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
 NGROK = getenv("NGROK")
-URL = f"{TELEGRAM_API_URL}/setWebhook?url={NGROK}/webhook"
+NG_PORT = getenv("NG_PORT")
+
 
 dp = Dispatcher()
 dp.include_router(router)
@@ -33,10 +33,6 @@ app = web.Application()
 async def set_webhook():
     webhook_uri = f"{NGROK}/{BOT_TOKEN}"
     await bot.set_webhook(webhook_uri)
-
-
-async def on_shutdown(_):
-    await bot.delete_webhook()
 
 
 async def on_startup(_):
@@ -62,12 +58,11 @@ app.router.add_post(f"/{BOT_TOKEN}", handle_webhook)
 if __name__ == "__main__":
     try:
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-        app.on_shutdown.append(on_shutdown)
         app.on_startup.append(on_startup)
         web.run_app(
             app,
             host="0.0.0.0",
-            port=8000
+            port=NG_PORT
         )
     except KeyboardInterrupt:
         print("Shutting down")
