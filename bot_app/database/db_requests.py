@@ -13,7 +13,7 @@ DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
 
 
-async def set_user(username: str) -> None:
+async def set_user(username: str, user_id: int) -> None:
     """
     Adds a new user to the database
     if the user with the specified Username doesn't exist.
@@ -34,12 +34,12 @@ async def set_user(username: str) -> None:
 
         await connection.execute(
             """
-            INSERT INTO users (username)
-            VALUES ($1)
+            INSERT INTO users (username, user_id)
+            VALUES ($1, $2)
             ON CONFLICT (username) DO UPDATE
             SET username = EXCLUDED.username
             """,
-            username
+            username, user_id
         )
 
     except Exception as _ex:

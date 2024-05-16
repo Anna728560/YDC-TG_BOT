@@ -1,4 +1,5 @@
 from aiogram import Router
+from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
@@ -9,7 +10,11 @@ router = Router()
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    await rq.set_user(message.from_user.username)
+    await rq.set_user(
+        message.from_user.username,
+        message.from_user.id
+    )
     await message.answer(
-        "👋 Hello!"
+        f"👋 Hello, <b>{message.from_user.username}</b>!",
+        parse_mode=ParseMode.HTML
     )

@@ -22,7 +22,6 @@ async def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     dp.include_router(router)
-    await bot.delete_webhook()
     await setup_database()
     await dp.start_polling(bot)
 
