@@ -15,7 +15,7 @@ DB_NAME = os.getenv("DB_NAME")
 
 async def set_user(username: str, user_id: int) -> None:
     """
-    Adds a new user to the database
+    Adds a new user to the database_config
     if the user with the specified Username doesn't exist.
 
     Parameters:

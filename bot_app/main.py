@@ -9,9 +9,9 @@ from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from bot_handlers import router
-from database.db_config import setup_database
-from trello_board import setup_trello_board
+from bot_config.bot_handlers import router
+from database_config.db_config import setup_database
+from trello_config.trello_board import setup_trello_board
 
 
 load_dotenv()
