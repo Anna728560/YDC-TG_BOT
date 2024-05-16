@@ -62,7 +62,7 @@ if __name__ == "__main__":
         web.run_app(
             app,
             host="0.0.0.0",
-            port=NG_PORT
+            port=int(NG_PORT)
         )
     except KeyboardInterrupt:
         print("Shutting down")
