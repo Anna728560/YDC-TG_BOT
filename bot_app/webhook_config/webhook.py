@@ -1,33 +1,21 @@
-import asyncio
-import logging
-import sys
-
 from os import getenv
-
 from aiohttp import web
-from dotenv import load_dotenv
 
 from aiogram import Dispatcher, Bot, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from bot_handlers import router
-from database_config.db_config import setup_database
-from trello_config.trello_board import setup_trello_board
+from bot_app.bot_config.bot_handlers import router
+from bot_app.database_config.db_config import setup_database
+from bot_app.trello_config.trello_board import setup_trello_board
 
 
-load_dotenv()
-
-BOT_TOKEN = getenv("BOT_TOKEN")
 NGROK = getenv("NGROK")
-
-
+BOT_TOKEN = getenv("BOT_TOKEN")
 
 dp = Dispatcher()
 dp.include_router(router)
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-
-app = web.Application()
 
 
 async def set_webhook():
@@ -52,17 +40,8 @@ async def handle_webhook(request):
     return web.Response(status=403)
 
 
-app.router.add_post(f"/{BOT_TOKEN}", handle_webhook)
-
-
-if __name__ == "__main__":
-    try:
-        logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-        app.on_startup.append(on_startup)
-        web.run_app(
-            app,
-            host="0.0.0.0",
-            port=8002
-        )
-    except KeyboardInterrupt:
-        print("Shutting down")
+def setup_webhook():
+    app = web.Application()
+    app.router.add_post(f"/{BOT_TOKEN}", handle_webhook)
+    app.on_startup.append(on_startup)
+    return app

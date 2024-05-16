@@ -1,36 +1,16 @@
-import asyncio
 import logging
 import sys
-
-from os import getenv
-from dotenv import load_dotenv
-
-from aiogram import Dispatcher, Bot
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-
-from bot_handlers import router
-from database_config.db_config import setup_database
-from trello_config.trello_board import setup_trello_board
-
-
-load_dotenv()
-BOT_TOKEN = getenv("BOT_TOKEN")
-
-
-async def main() -> None:
-    dp = Dispatcher()
-    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-
-    dp.include_router(router)
-    await setup_database()
-    await setup_trello_board()
-    await dp.start_polling(bot)
-
+from aiohttp import web
+from webhook_config.webhook import setup_webhook
 
 if __name__ == "__main__":
     try:
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-        asyncio.run(main())
+        app = setup_webhook()
+        web.run_app(
+            app,
+            host="0.0.0.0",
+            port=8002
+        )
     except KeyboardInterrupt:
         print("Shutting down")
