@@ -15,12 +15,12 @@ from trello_config.trello_board import setup_trello_board
 
 
 load_dotenv()
-TOKEN = getenv("BOT_TOKEN")
+BOT_TOKEN = getenv("BOT_TOKEN")
 
 
 async def main() -> None:
     dp = Dispatcher()
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     dp.include_router(router)
     await setup_database()

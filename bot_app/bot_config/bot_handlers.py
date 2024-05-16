@@ -18,7 +18,8 @@ async def cmd_start(message: Message):
         message.from_user.username,
         message.from_user.id
     )
-    loger.info(message.from_user.username)
+    loger.info("Here is message", message.from_user.username, message.from_user)
+
     await message.answer(
         f"👋 Hello, <b>{message.from_user.username}</b>!",
         parse_mode=ParseMode.HTML
