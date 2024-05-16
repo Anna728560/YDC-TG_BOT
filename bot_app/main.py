@@ -11,6 +11,7 @@ from aiogram.enums import ParseMode
 
 from bot_handlers import router
 from database.db_config import setup_database
+from trello_board import setup_trello_board
 
 
 load_dotenv()
@@ -23,6 +24,7 @@ async def main() -> None:
 
     dp.include_router(router)
     await setup_database()
+    await setup_trello_board()
     await dp.start_polling(bot)
 
 
