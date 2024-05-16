@@ -8,7 +8,7 @@ from aiogram.types import Message
 from bot_app.database_config import db_requests as rq
 
 router = Router()
-loger = logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+logger = logging.getLogger('example_logger')
 
 
 @router.message(CommandStart())
@@ -18,7 +18,9 @@ async def cmd_start(message: Message):
         message.from_user.username,
         message.from_user.id
     )
-    loger.info("Here is message", message.from_user.username, message.from_user)
+
+    logger.warning('This is a warning')
+    logger.info("Here is message", message.from_user.username, message.from_user)
 
     await message.answer(
         f"👋 Hello, <b>{message.from_user.username}</b>!",
