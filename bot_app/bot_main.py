@@ -15,15 +15,20 @@ from database.db_config import setup_database
 
 load_dotenv()
 TOKEN = getenv("BOT_TOKEN")
+WEB_HOOK_URL = getenv("WEB_HOOK_URL")
+
+bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+
+async def on_startup(tg_bot: Bot) -> None:
+    await tg_bot.set_webhook(f"{WEB_HOOK_URL}/webhook")
 
 
 async def main() -> None:
     dp = Dispatcher()
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-
     dp.include_router(router)
     await setup_database()
-    await dp.start_polling(bot)
+    dp.startup.register(on_startup)
 
 
 if __name__ == "__main__":
