@@ -17,6 +17,8 @@ from trello_config.trello_board import setup_trello_board
 load_dotenv()
 BOT_TOKEN = getenv("BOT_TOKEN")
 
+logger = logging.getLogger()
+
 
 async def main() -> None:
     dp = Dispatcher()
@@ -33,4 +35,4 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.INFO, stream=sys.stdout)
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("Shutting down")
+        logger.info("Shutting down")

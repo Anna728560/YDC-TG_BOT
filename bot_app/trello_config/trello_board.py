@@ -1,3 +1,4 @@
+import logging
 import os
 
 import aiohttp
@@ -9,6 +10,8 @@ load_dotenv()
 
 TRELLO_APY_KEY = os.getenv("TRELLO_APY_KEY")
 TRELLO_TOKEN = os.getenv("TRELLO_TOKEN")
+
+logger = logging.getLogger()
 
 
 async def check_board_exists() -> bool:
@@ -59,10 +62,11 @@ async def setup_trello_board():
         list_names = ["Done", "InProgress"]
         for name in list_names:
             await create_list(board_id, name)
-        print(f"Created board with id {board_id}; "
-              f"columns: {', '.join(list_names)}")
+        logger.info(f"Created board with id {board_id}; "
+                    f"Columns: {', '.join(list_names)}")
+
     else:
-        print("Board already exists, skipping creation.")
+        logger.info("Board already exists, skipping creation.")
 
 
 if __name__ == "__main__":

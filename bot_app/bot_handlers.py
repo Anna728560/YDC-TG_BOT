@@ -8,7 +8,6 @@ from aiogram.types import Message
 from database_config import db_requests as rq
 
 router = Router()
-logger = logging.getLogger('example_logger')
 
 
 @router.message(CommandStart())

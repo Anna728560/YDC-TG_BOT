@@ -1,3 +1,4 @@
+import logging
 import os
 import asyncpg
 
@@ -11,6 +12,8 @@ DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
+
+logger = logging.getLogger()
 
 
 async def set_user(username: str, user_id: int) -> None:
@@ -44,4 +47,4 @@ async def set_user(username: str, user_id: int) -> None:
         )
 
     except Exception as _ex:
-        print(f"[INFO] Error while connecting to PostgreSQL, {_ex}")
+        logger.info(f"Error while connecting to PostgreSQL, {_ex}")
