@@ -5,7 +5,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from bot_app.database_config import db_requests as rq
+from database_config import db_requests as rq
 
 router = Router()
 logger = logging.getLogger('example_logger')
