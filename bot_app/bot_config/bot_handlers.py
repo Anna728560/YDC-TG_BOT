@@ -17,7 +17,6 @@ async def cmd_start(message: Message):
         message.from_user.username,
         message.from_user.id
     )
-
     await message.answer(
         f"👋 Hello, <b>{message.from_user.username}</b>!",
         parse_mode=ParseMode.HTML

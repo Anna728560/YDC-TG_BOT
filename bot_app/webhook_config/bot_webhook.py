@@ -8,6 +8,7 @@ from aiogram.enums import ParseMode
 from bot_app.bot_config.bot_handlers import router
 
 
+CHAT_ID = None
 BOT_WEBHOOK = getenv("BOT_WEBHOOK")
 BOT_TOKEN = getenv("BOT_TOKEN")
 WEBHOOK_URI = f"{BOT_WEBHOOK}/{BOT_TOKEN}"
@@ -23,11 +24,15 @@ async def set_bot_webhook():
 
 
 async def handle_bot_webhook(request):
+    global CHAT_ID
     if request.content_type == "application/json":
         data = await request.json()
         token = request.path.split("/")[-1]
+
         if token == BOT_TOKEN:
             update = types.Update(**data)
+            CHAT_ID = update.message.chat.id
             await dp.feed_update(bot, update)
             return web.Response(status=200)
+
     return web.Response(status=403)
