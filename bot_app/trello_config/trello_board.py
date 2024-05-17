@@ -1,10 +1,9 @@
 import logging
 import os
-from typing import Tuple, Any
+from typing import Any
 
 import aiohttp
 import requests
-from aiohttp import web
 from dotenv import load_dotenv
 
 
@@ -18,6 +17,13 @@ logger = logging.getLogger()
 
 
 async def check_board_exists() -> tuple[bool, Any] | tuple[bool, None]:
+    """
+    Checks if the Trello board
+    named 'Trello_Tg_Bot_Board' exists for the authenticated user.
+
+    :return: A tuple indicating whether the board exists
+    and its ID if found, or None if not found.
+    """
     url = "https://api.trello.com/1/members/me/boards"
     query = {
         "key": TRELLO_API_KEY,
@@ -33,6 +39,11 @@ async def check_board_exists() -> tuple[bool, Any] | tuple[bool, None]:
 
 
 async def create_board():
+    """
+    Creates a new Trello board named 'Trello_Tg_Bot_Board'.
+
+    :return: The ID of the newly created Trello board.
+    """
     url = "https://api.trello.com/1/boards/"
     query = {
         "key": TRELLO_API_KEY,
@@ -47,6 +58,13 @@ async def create_board():
 
 
 async def create_list(board_id, list_name):
+    """
+    Creates a new list on a Trello board.
+
+    :param board_id: The ID of the Trello board where the list will be created.
+    :param list_name: The name of the list to create.
+    :return: The ID of the newly created Trello list.
+    """
     url = f"https://api.trello.com/1/lists"
     query = {
         "key": TRELLO_API_KEY,
@@ -60,6 +78,11 @@ async def create_list(board_id, list_name):
 
 
 async def setup_trello_board():
+    """
+    Sets up the Trello board for the Telegram bot.
+
+    :return: None
+    """
     board_exists, board_id = await check_board_exists()
     if not board_exists:
         board_id = await create_board()
@@ -77,6 +100,12 @@ async def setup_trello_board():
 
 
 def set_trello_webhook(board_id):
+    """
+    Sets up a webhook for Trello events on the specified board.
+
+    :param board_id: The ID of the Trello board to set up the webhook for.
+    :return: None
+    """
     response = requests.request(
         "POST",
         f"https://api.trello.com/1/webhooks",

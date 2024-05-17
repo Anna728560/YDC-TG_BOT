@@ -1,40 +1,72 @@
 import json
-import sys
-from os import getenv
 import logging
+from os import getenv
+
 from aiohttp import web
 
-from aiogram import Dispatcher, Bot
+from aiogram import Dispatcher, Bot, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from bot_app.bot_config.bot_handlers import router
 
 
-from bot_app.database_config.db_config import setup_database
-from bot_app.trello_config.trello_board import setup_trello_board
-from bot_app.webhook_config.bot_webhook import set_bot_webhook, handle_bot_webhook
-from bot_app.webhook_config.bot_webhook import CHAT_ID
+CHAT_ID = None
 
-
+WEBHOOK = getenv("WEBHOOK")
 BOT_TOKEN = getenv("BOT_TOKEN")
+WEBHOOK_URI = f"{WEBHOOK}/{BOT_TOKEN}"
 
 logger = logging.getLogger()
 
 dp = Dispatcher()
-bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-app = web.Application()
+dp.include_router(router)
+bot = Bot(
+    token=BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 
 
-async def on_startup(_):
-    await set_bot_webhook()
-    await setup_database()
-    await setup_trello_board()
+async def set_bot_webhook():
+    await bot.set_webhook(WEBHOOK_URI)
+
+
+async def handle_bot_webhook(request):
+    """
+    Handles incoming webhook requests from the Telegram bot.
+
+    :param request: The incoming request object.
+    :return: A web response with a status code
+    indicating the result of the request processing.
+    """
+    global CHAT_ID
+    if request.content_type == "application/json":
+        data = await request.json()
+        token = request.path.split("/")[-1]
+
+        if token == BOT_TOKEN:
+            update = types.Update(**data)
+            CHAT_ID = update.message.chat.id
+            logger.info(f"Set chat id: {CHAT_ID}")
+            await dp.feed_update(bot, update)
+            return web.Response(status=200)
+
+    return web.Response(status=403)
 
 
 async def handle_get(request):
+    """
+    Request handler for GET requests.
+    """
     return web.Response(text="Hello, World!")
 
 
 async def handle_trello_webhook(request):
+    """
+    Handles incoming Trello webhook requests.
+
+    :param request: The incoming request from Trello webhook.
+    :return: A response indicating the status of the request.
+    """
     try:
         logger.info(f"Received Trello webhook request: {request.method} {request.path}")
 
@@ -63,7 +95,7 @@ async def handle_trello_webhook(request):
         elif list_after:
             message += f"<b>New list :</b> {list_after}\n"
 
-        await bot.send_message(chat_id=467362391, text=message, parse_mode=ParseMode.HTML)
+        await bot.send_message(chat_id=CHAT_ID, text=message, parse_mode=ParseMode.HTML)
 
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")
@@ -72,13 +104,10 @@ async def handle_trello_webhook(request):
 
 
 async def accept_trello_webhook(request):
+    """
+    Accepts the Trello webhook request and returns an OK response.
+
+    :param request: The incoming request from Trello webhook.
+    :return: A response indicating the acceptance of the request.
+    """
     return web.Response(text="OK")
-
-
-def setup_webhook():
-    app.router.add_post("/trello-webhook", handle_trello_webhook)
-    app.router.add_head("/trello-webhook", accept_trello_webhook)
-    app.router.add_post(f"/{BOT_TOKEN}", handle_bot_webhook)
-
-    app.on_startup.append(on_startup)
-    return app
