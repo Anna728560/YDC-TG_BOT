@@ -50,20 +50,20 @@ async def handle_trello_webhook(request):
 
         member_creator = data["action"]["memberCreator"]["fullName"]
 
-        message = (f"New action on Trello:\n\n"
-                   f"Type: {action_type}\n"
-                   f"Card: {card_name}\n"
-                   f"Board: {board_name}\n"
-                   f"By: {member_creator}\n")
+        message = (f"***<b>New action on Trello</b>***\n\n"
+                   f"<b>Type:</b> {action_type}\n"
+                   f"<b>Card:</b> {card_name}\n"
+                   f"<b>Board:</b> {board_name}\n"
+                   f"<b>By:</b> {member_creator}\n")
 
         if list_before and list_after:
-            message += f"Moved from: {list_before} to {list_after}\n"
+            message += f"<b>Moved from 📥</b> {list_before} <b>to</b> 📤 {list_after}\n"
         elif list_before:
-            message += f"Previous list: {list_before}\n"
+            message += f"<b>Previous list 📥:</b> {list_before}\n"
         elif list_after:
-            message += f"New list: {list_after}\n"
+            message += f"<b>New list 📤:</b> {list_after}\n"
 
-        await bot.send_message(chat_id=467362391, text=message)
+        await bot.send_message(chat_id=467362391, text=message, parse_mode=ParseMode.HTML)
 
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")
