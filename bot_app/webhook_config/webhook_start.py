@@ -57,11 +57,11 @@ async def handle_trello_webhook(request):
                    f"<b>By:</b>    {member_creator}\n\n")
 
         if list_before and list_after:
-            message += f"<b>Moved FROM 📥</b> {list_before}\n<b>TO</b> 📤 {list_after}\n"
+            message += f"<b>FROM </b> {list_before}\n<b>TO</b>  {list_after}\n"
         elif list_before:
-            message += f"<b>Previous list 📥:</b> {list_before}\n"
+            message += f"<b>Previous list :</b> {list_before}\n"
         elif list_after:
-            message += f"<b>New list 📤:</b> {list_after}\n"
+            message += f"<b>New list :</b> {list_after}\n"
 
         await bot.send_message(chat_id=467362391, text=message, parse_mode=ParseMode.HTML)
 
