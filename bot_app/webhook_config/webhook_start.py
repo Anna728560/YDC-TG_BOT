@@ -50,14 +50,14 @@ async def handle_trello_webhook(request):
 
         member_creator = data["action"]["memberCreator"]["fullName"]
 
-        message = (f"***<b>New action on Trello</b>***\n\n"
+        message = (f"***<h1><b>New action on Trello</b></h1>***\n\n"
                    f"<b>Type:</b>  {action_type}\n"
                    f"<b>Card:</b>  {card_name}\n"
                    f"<b>Board:</b> {board_name}\n"
                    f"<b>By:</b>    {member_creator}\n\n")
 
         if list_before and list_after:
-            message += f"<b>FROM </b> {list_before}\n<b>TO</b>  {list_after}\n"
+            message += f"<b>FROM:</b> {list_before}\n<b>TO:</b> {list_after}\n"
         elif list_before:
             message += f"<b>Previous list :</b> {list_before}\n"
         elif list_after:
