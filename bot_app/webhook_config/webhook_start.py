@@ -17,8 +17,8 @@ from bot_app.webhook_config.bot_webhook import CHAT_ID
 
 BOT_TOKEN = getenv("BOT_TOKEN")
 
-logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
+
 dp = Dispatcher()
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 app = web.Application()
@@ -57,7 +57,7 @@ async def handle_trello_webhook(request):
 
 
 def setup_webhook():
-    app.router.add_get("/trello-webhook", handle_trello_webhook)
+    app.router.add_post("/trello-webhook", handle_trello_webhook)
     app.router.add_post(f"/{BOT_TOKEN}", handle_bot_webhook)
     app.router.add_get("/", handle_get)
     app.on_startup.append(on_startup)

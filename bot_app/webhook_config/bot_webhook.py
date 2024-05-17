@@ -1,3 +1,4 @@
+import logging
 from os import getenv
 
 from aiohttp import web
@@ -13,6 +14,7 @@ BOT_WEBHOOK = getenv("BOT_WEBHOOK")
 BOT_TOKEN = getenv("BOT_TOKEN")
 WEBHOOK_URI = f"{BOT_WEBHOOK}/{BOT_TOKEN}"
 
+logger = logging.getLogger()
 
 dp = Dispatcher()
 dp.include_router(router)
@@ -32,6 +34,7 @@ async def handle_bot_webhook(request):
         if token == BOT_TOKEN:
             update = types.Update(**data)
             CHAT_ID = update.message.chat.id
+            logger.info(f"Set chat id: {CHAT_ID}")
             await dp.feed_update(bot, update)
             return web.Response(status=200)
 
