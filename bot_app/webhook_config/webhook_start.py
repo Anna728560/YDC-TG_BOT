@@ -33,7 +33,7 @@ async def handle_get(request):
 
 
 async def handle_trello_webhook(request):
-    return web.Response(text="Hello, from Trello!")
+    return web.Response(status=200)
 
 
 def setup_webhook():
