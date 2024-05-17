@@ -83,7 +83,8 @@ def set_trello_webhook(board_id):
         params={
             "key": TRELLO_API_KEY,
             "idModel": board_id,
-            "callbackURL": WEBHOOK + "/trello-webhook",
+            # "callbackURL": WEBHOOK + "/trello-webhook",
+            "callbackURL": WEBHOOK,
             "token": TRELLO_TOKEN,
             "description": "Webhook"
         }

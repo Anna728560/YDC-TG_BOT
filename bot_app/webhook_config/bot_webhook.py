@@ -10,9 +10,9 @@ from bot_app.bot_config.bot_handlers import router
 
 
 CHAT_ID = None
-BOT_WEBHOOK = getenv("BOT_WEBHOOK")
+WEBHOOK = getenv("WEBHOOK")
 BOT_TOKEN = getenv("BOT_TOKEN")
-WEBHOOK_URI = f"{BOT_WEBHOOK}/{BOT_TOKEN}"
+WEBHOOK_URI = f"{WEBHOOK}/{BOT_TOKEN}"
 
 logger = logging.getLogger()
 
