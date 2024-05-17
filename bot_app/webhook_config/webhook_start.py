@@ -44,15 +44,27 @@ async def handle_trello_webhook(request):
         action_type = data["action"]["type"]
         card_name = data["action"]["data"]["card"]["name"]
         board_name = data["action"]["data"]["board"]["name"]
+
+        list_before = data["action"]["data"].get(["listBefore", {}]).get("name", "")
+        list_after = data["action"]["data"].get(["listAfter", {}]).get("name", "")
+
         member_creator = data["action"]["memberCreator"]["fullName"]
 
         message = (f"New action on Trello:\n\n"
                    f"Type: {action_type}\n"
                    f"Card: {card_name}\n"
                    f"Board: {board_name}\n"
-                   f"By: {member_creator}")
+                   f"By: {member_creator}\n")
+
+        if list_before and list_after:
+            message += f"Moved from: {list_before} to {list_after}\n"
+        elif list_before:
+            message += f"Previous list: {list_before}\n"
+        elif list_after:
+            message += f"New list: {list_after}\n"
 
         await bot.send_message(chat_id=467362391, text=message)
+
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")
 
