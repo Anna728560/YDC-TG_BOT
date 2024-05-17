@@ -45,8 +45,8 @@ async def handle_trello_webhook(request):
         card_name = data["action"]["data"]["card"]["name"]
         board_name = data["action"]["data"]["board"]["name"]
 
-        list_before = data["action"]["data"].get(["listBefore", {}]).get("name", "")
-        list_after = data["action"]["data"].get(["listAfter", {}]).get("name", "")
+        list_before = data["action"]["data"].get("listBefore", {}).get("name", "")
+        list_after = data["action"]["data"].get("listAfter", {}).get("name", "")
 
         member_creator = data["action"]["memberCreator"]["fullName"]
 
