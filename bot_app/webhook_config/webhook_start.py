@@ -37,7 +37,7 @@ async def handle_trello_webhook(request):
 
 
 def setup_webhook():
-    app.router.add_post("/trello-webhook", handle_trello_webhook)
+    app.router.add_get("/trello-webhook", handle_trello_webhook)
     app.router.add_post(f"/{BOT_TOKEN}", handle_bot_webhook)
     app.router.add_get("/", handle_get)
     app.on_startup.append(on_startup)
