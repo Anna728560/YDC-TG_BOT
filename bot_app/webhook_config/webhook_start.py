@@ -7,9 +7,9 @@ from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from bot_app.bot_config.bot_handlers import router
+
 from bot_app.database_config.db_config import setup_database
-from bot_app.trello_config.trello_board import setup_trello_board, handle_trello_webhook
+from bot_app.trello_config.trello_board import setup_trello_board
 from bot_app.webhook_config.bot_webhook import set_bot_webhook, handle_bot_webhook
 
 
