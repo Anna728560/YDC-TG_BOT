@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import Router
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
