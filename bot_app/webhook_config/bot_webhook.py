@@ -8,9 +8,9 @@ from aiogram.enums import ParseMode
 from bot_app.bot_config.bot_handlers import router
 
 
-NGROK = getenv("NGROK")
+BOT_WEBHOOK = getenv("BOT_WEBHOOK")
 BOT_TOKEN = getenv("BOT_TOKEN")
-WEBHOOK_URI = f"{NGROK}/{BOT_TOKEN}"
+WEBHOOK_URI = f"{BOT_WEBHOOK}/{BOT_TOKEN}"
 
 
 dp = Dispatcher()

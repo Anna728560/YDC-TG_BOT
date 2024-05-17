@@ -73,10 +73,10 @@ async def setup_trello_board():
         logger.info(f"Board already exists, skipping creation."
                     f"Bord id: {board_id}")
 
-    handle_trello_webhook(board_id)
+    set_trello_webhook(board_id)
 
 
-def handle_trello_webhook(board_id):
+def set_trello_webhook(board_id):
     response = requests.request(
         "POST",
         f"https://api.trello.com/1/webhooks",
