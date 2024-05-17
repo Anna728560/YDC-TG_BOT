@@ -1,17 +1,19 @@
-import logging
 import os
-from typing import Any
-
+import logging
 import aiohttp
 import requests
+
+from typing import Any
 from dotenv import load_dotenv
 
 
 load_dotenv()
 
+
 TRELLO_API_KEY = os.getenv("TRELLO_API_KEY")
 TRELLO_TOKEN = os.getenv("TRELLO_TOKEN")
 WEBHOOK = os.getenv("WEBHOOK")
+
 
 logger = logging.getLogger()
 
@@ -35,6 +37,7 @@ async def check_board_exists() -> tuple[bool, Any] | tuple[bool, None]:
             for board in boards:
                 if board["name"] == "Trello_Tg_Bot_Board":
                     return True, board["id"]
+                  
     return False, None
 
 
@@ -47,6 +50,7 @@ async def create_board():
     url = "https://api.trello.com/1/boards/"
     query = {
         "key": TRELLO_API_KEY,
+
         "token": TRELLO_TOKEN,
         "name": "Trello_Tg_Bot_Board",
         "defaultLists": "false"
@@ -68,6 +72,7 @@ async def create_list(board_id, list_name):
     url = f"https://api.trello.com/1/lists"
     query = {
         "key": TRELLO_API_KEY,
+
         "token": TRELLO_TOKEN,
         "name": list_name,
         "idBoard": board_id
@@ -89,6 +94,7 @@ async def setup_trello_board():
         list_names = ["Done", "InProgress"]
         for name in list_names:
             await create_list(board_id, name)
+        
         logger.info(f"Created board with id {board_id}; "
                     f"Columns: {', '.join(list_names)}")
 
