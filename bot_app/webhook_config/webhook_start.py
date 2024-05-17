@@ -35,23 +35,28 @@ async def handle_get(request):
 
 
 async def handle_trello_webhook(request):
-    data = await request.json()
-    logger.info(f"Received Trello webhook: {json.dumps(data, indent=2)}")
+    try:
+        logger.info(f"Received Trello webhook request: {request.method} {request.path}")
 
-    action_type = data["action"]["type"]
-    card_name = data["action"]["data"]["card"]["name"]
-    board_name = data["action"]["data"]["board"]["name"]
-    list_name = data["action"]["data"]["list"]["name"]
-    member_creator = data["action"]["memberCreator"]["fullName"]
+        data = await request.json()
+        logger.info(f"Received Trello webhook: {json.dumps(data, indent=2)}")
 
-    message = (f"New action on Trello:\n\n"
-               f"Type: {action_type}\n"
-               f"Card: {card_name}\n"
-               f"Board: {board_name}\n"
-               f"List: {list_name}\n"
-               f"By: {member_creator}")
+        action_type = data["action"]["type"]
+        card_name = data["action"]["data"]["card"]["name"]
+        board_name = data["action"]["data"]["board"]["name"]
+        list_name = data["action"]["data"]["list"]["name"]
+        member_creator = data["action"]["memberCreator"]["fullName"]
 
-    await bot.send_message(chat_id=CHAT_ID, text=message)
+        message = (f"New action on Trello:\n\n"
+                   f"Type: {action_type}\n"
+                   f"Card: {card_name}\n"
+                   f"Board: {board_name}\n"
+                   f"List: {list_name}\n"
+                   f"By: {member_creator}")
+
+        await bot.send_message(chat_id=CHAT_ID, text=message)
+    except Exception as e:
+        logger.error(f"Error handling Trello webhook: {e}")
 
     return web.Response(status=200)
 
