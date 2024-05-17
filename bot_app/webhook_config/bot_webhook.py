@@ -1,35 +1,28 @@
 from os import getenv
+
 from aiohttp import web
 
 from aiogram import Dispatcher, Bot, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-
 from bot_app.bot_config.bot_handlers import router
-from bot_app.database_config.db_config import setup_database
-from bot_app.trello_config.trello_board import setup_trello_board
 
 
 NGROK = getenv("NGROK")
 BOT_TOKEN = getenv("BOT_TOKEN")
+WEBHOOK_URI = f"{NGROK}/{BOT_TOKEN}"
+
 
 dp = Dispatcher()
 dp.include_router(router)
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 
-async def set_webhook():
-    webhook_uri = f"{NGROK}/{BOT_TOKEN}"
-    await bot.set_webhook(webhook_uri)
+async def set_bot_webhook():
+    await bot.set_webhook(WEBHOOK_URI)
 
 
-async def on_startup(_):
-    await set_webhook()
-    await setup_database()
-    await setup_trello_board()
-
-
-async def handle_webhook(request):
+async def handle_bot_webhook(request):
     if request.content_type == "application/json":
         data = await request.json()
         token = request.path.split("/")[-1]
@@ -38,10 +31,3 @@ async def handle_webhook(request):
             await dp.feed_update(bot, update)
             return web.Response(status=200)
     return web.Response(status=403)
-
-
-def setup_webhook():
-    app = web.Application()
-    app.router.add_post(f"/{BOT_TOKEN}", handle_webhook)
-    app.on_startup.append(on_startup)
-    return app

@@ -1,23 +1,26 @@
 import logging
 import os
+from typing import Tuple, Any
 
 import aiohttp
-import asyncio
+import requests
+from aiohttp import web
 from dotenv import load_dotenv
 
 
 load_dotenv()
 
-TRELLO_APY_KEY = os.getenv("TRELLO_APY_KEY")
+TRELLO_API_KEY = os.getenv("TRELLO_API_KEY")
 TRELLO_TOKEN = os.getenv("TRELLO_TOKEN")
+WEBHOOK = os.getenv("WEBHOOK")
 
 logger = logging.getLogger()
 
 
-async def check_board_exists() -> bool:
+async def check_board_exists() -> tuple[bool, Any] | tuple[bool, None]:
     url = "https://api.trello.com/1/members/me/boards"
     query = {
-        "key": TRELLO_APY_KEY,
+        "key": TRELLO_API_KEY,
         "token": TRELLO_TOKEN,
     }
     async with aiohttp.ClientSession() as session:
@@ -25,14 +28,14 @@ async def check_board_exists() -> bool:
             boards = await response.json()
             for board in boards:
                 if board["name"] == "Trello_Tg_Bot_Board":
-                    return True
-    return False
+                    return True, board["id"]
+    return False, None
 
 
 async def create_board():
     url = "https://api.trello.com/1/boards/"
     query = {
-        "key": TRELLO_APY_KEY,
+        "key": TRELLO_API_KEY,
         "token": TRELLO_TOKEN,
         "name": "Trello_Tg_Bot_Board",
         "defaultLists": "false"
@@ -46,7 +49,7 @@ async def create_board():
 async def create_list(board_id, list_name):
     url = f"https://api.trello.com/1/lists"
     query = {
-        "key": TRELLO_APY_KEY,
+        "key": TRELLO_API_KEY,
         "token": TRELLO_TOKEN,
         "name": list_name,
         "idBoard": board_id
@@ -57,7 +60,8 @@ async def create_list(board_id, list_name):
 
 
 async def setup_trello_board():
-    if not await check_board_exists():
+    board_exists, board_id = await check_board_exists()
+    if not board_exists:
         board_id = await create_board()
         list_names = ["Done", "InProgress"]
         for name in list_names:
@@ -66,8 +70,26 @@ async def setup_trello_board():
                     f"Columns: {', '.join(list_names)}")
 
     else:
-        logger.info("Board already exists, skipping creation.")
+        logger.info(f"Board already exists, skipping creation."
+                    f"Bord id: {board_id}")
+
+    handle_trello_webhook(board_id)
 
 
-if __name__ == "__main__":
-    asyncio.run(setup_trello_board())
+def handle_trello_webhook(board_id):
+    response = requests.request(
+        "POST",
+        f"https://api.trello.com/1/webhooks",
+        params={
+            "key": TRELLO_API_KEY,
+            "idModel": board_id,
+            "callbackURL": WEBHOOK,
+            "token": TRELLO_TOKEN,
+            "description": "Webhook"
+        }
+    )
+    if response.status_code == 200:
+        logger.info("Webhook created successfully")
+    else:
+        logger.info(f"Error creating webhook: {response.text} \n"
+                    f"for board id: {board_id}")
