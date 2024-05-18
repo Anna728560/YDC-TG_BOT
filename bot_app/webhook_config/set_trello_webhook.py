@@ -2,9 +2,13 @@ import logging
 from os import getenv
 
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 TRELLO_API_KEY = getenv("TRELLO_API_KEY")
-webhook = getenv("WEBHOOK") + "/trello-webhook"
+WEBHOOK = getenv("WEBHOOK") + "/trello-webhook"
 TRELLO_TOKEN = getenv("TRELLO_TOKEN")
 
 
@@ -24,7 +28,7 @@ def set_trello_webhook(board_id):
         params={
             "key": TRELLO_API_KEY,
             "idModel": board_id,
-            "callbackURL": webhook,
+            "callbackURL": WEBHOOK,
             "token": TRELLO_TOKEN,
             "description": "Webhook"
         }
@@ -35,5 +39,5 @@ def set_trello_webhook(board_id):
         logger.info(f"Error creating webhook: {response.text} \n"
                     f"key: {TRELLO_API_KEY} \n"
                     f"idModel: {board_id} \n"
-                    f"callbackURL: {webhook} \n"
+                    f"callbackURL: {WEBHOOK} \n"
                     f"token: {TRELLO_TOKEN} \n")

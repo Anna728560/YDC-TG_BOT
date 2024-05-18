@@ -7,7 +7,7 @@ from aiogram import Dispatcher, Bot, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from bot_app.bot_config.bot_handlers import router
-from bot_app.database_config.db_requests import set_user
+
 
 WEBHOOK = getenv("WEBHOOK")
 BOT_TOKEN = getenv("BOT_TOKEN")
