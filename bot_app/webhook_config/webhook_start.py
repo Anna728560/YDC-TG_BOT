@@ -36,13 +36,6 @@ async def on_startup(_):
     await setup_trello_board()
 
 
-async def handle_get(request):
-    """
-    Request handler for GET requests.
-    """
-    return web.Response(text="Hello, World!")
-
-
 async def handle_trello_webhook(request):
     """
     Handles incoming Trello webhook requests.
@@ -102,7 +95,7 @@ def setup_webhook():
     :return: The configured web application instance.
     """
     app.router.add_post("/trello-webhook", handle_trello_webhook)
-    app.router.add_head("/trello-webhook", accept_trello_webhook)
+    app.router.add_get("/trello-webhook", accept_trello_webhook)
     app.router.add_post(f"/{BOT_TOKEN}", handle_bot_webhook)
 
     app.on_startup.append(on_startup)
