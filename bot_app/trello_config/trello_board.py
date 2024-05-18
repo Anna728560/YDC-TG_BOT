@@ -106,13 +106,14 @@ def set_trello_webhook(board_id):
     :param board_id: The ID of the Trello board to set up the webhook for.
     :return: None
     """
+    webhook = WEBHOOK + "/trello-webhook"
     response = requests.request(
         "POST",
         f"https://api.trello.com/1/webhooks",
         params={
             "key": TRELLO_API_KEY,
             "idModel": board_id,
-            "callbackURL": WEBHOOK + "/trello-webhook",
+            "callbackURL": webhook,
             "token": TRELLO_TOKEN,
             "description": "Webhook"
         }
@@ -121,4 +122,7 @@ def set_trello_webhook(board_id):
         logger.info("Webhook created successfully")
     else:
         logger.info(f"Error creating webhook: {response.text} \n"
-                    f"for board id: {board_id}")
+                    f"key: {board_id} \n"
+                    f"idModel: {board_id} \n"
+                    f"callbackURL: {webhook} \n"
+                    f"token: {TRELLO_TOKEN} \n")
