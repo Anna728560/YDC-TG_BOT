@@ -84,7 +84,7 @@ async def accept_trello_webhook(request):
     :param request: The incoming request from Trello webhook.
     :return: A response indicating the acceptance of the request.
     """
-    return web.Response(text="OK")
+    return web.Response(status=200)
 
 
 def setup_webhook():
