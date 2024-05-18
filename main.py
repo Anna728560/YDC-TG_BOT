@@ -1,7 +1,7 @@
 import logging
 import sys
 from aiohttp import web
-from bot_app.webhook_config.webhook_start import setup_webhook
+from bot_app.webhook_config.trello_webhook import setup_webhook
 
 if __name__ == "__main__":
     try:
@@ -10,7 +10,7 @@ if __name__ == "__main__":
         web.run_app(
             app,
             host="0.0.0.0",
-            port=3009
+            port=8080
         )
     except KeyboardInterrupt:
         print("Shutting down")

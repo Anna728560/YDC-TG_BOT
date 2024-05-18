@@ -26,6 +26,13 @@ async def set_bot_webhook():
 
 
 async def handle_bot_webhook(request):
+    """
+    Handles incoming webhook requests from the Telegram bot.
+
+    :param request: The incoming request object.
+    :return: A web response with a status code
+    indicating the result of the request processing.
+    """
     global CHAT_ID
     if request.content_type == "application/json":
         data = await request.json()
