@@ -10,7 +10,6 @@ from bot_app.trello_config.trello_board import setup_trello_board
 from bot_app.webhook_config.bot_webhook import (
     set_bot_webhook,
     handle_bot_webhook,
-    CHAT_ID,
     bot,
 )
 
@@ -78,7 +77,7 @@ async def handle_trello_webhook(request):
         elif list_after:
             message += f"<b>New list :</b> {list_after}\n"
 
-        await bot.send_message(chat_id=CHAT_ID, text=message, parse_mode=ParseMode.HTML)
+        await bot.send_message(chat_id=4207224259, text=message, parse_mode=ParseMode.HTML)
 
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")

@@ -16,7 +16,7 @@ DB_NAME = os.getenv("DB_NAME")
 logger = logging.getLogger()
 
 
-async def set_user(username: str, user_id: int) -> None:
+async def set_user(username: str, user_id: int, chat_id: int) -> None:
     """
     Adds a new user to the database_config
     if the user with the specified Username doesn't exist.
@@ -24,6 +24,7 @@ async def set_user(username: str, user_id: int) -> None:
     Parameters:
         username (str): Username of the user.
         user_id (int): User ID of the user.
+        chat_id (int): Chat ID of the user.
 
     Returns:
         None
@@ -38,12 +39,12 @@ async def set_user(username: str, user_id: int) -> None:
 
         await connection.execute(
             """
-            INSERT INTO users (username, user_id)
-            VALUES ($1, $2)
+            INSERT INTO users (username, user_id, chat_id)
+            VALUES ($1, $2, $3)
             ON CONFLICT (username) DO UPDATE
-            SET username = EXCLUDED.username
+            SET username = EXCLUDED.username, chat_id = EXCLUDED.chat_id
             """,
-            username, user_id
+            username, user_id, chat_id
         )
 
     except Exception as _ex:
