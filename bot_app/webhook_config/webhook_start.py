@@ -2,6 +2,7 @@ import json
 from os import getenv
 import logging
 
+import aiohttp
 from aiohttp import web
 from aiogram.enums import ParseMode
 
@@ -69,7 +70,12 @@ async def handle_trello_webhook(request):
         elif list_after:
             message += f"<b>New list :</b> {list_after}\n"
 
-        await bot.send_message(chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML)
+        async with aiohttp.ClientSession() as session:
+            await bot.send_message(
+                chat_id=GROUP_CHAT_ID,
+                text=message,
+                parse_mode=ParseMode.HTML
+            )
 
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")
