@@ -62,11 +62,11 @@ WEBHOOK=webhook_url
 ```shell
 python main.py
 ```
-2. Run the bot on Telegram.
+2. Activate your bot on Telegram.
 
 ![img.png](img.png)
 
-3. Upon program launch, a Trello board will be created automatically with two columns, "InProgress" and "Done".
+3. Upon program launch, a Trello board will be created automatically with two columns, `InProgress` and `Done`.
 
 ![img_2.png](img_2.png)
 
