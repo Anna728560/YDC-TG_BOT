@@ -1,7 +1,9 @@
 import logging
 import sys
 from aiohttp import web
-from bot_app.webhook_config.trello_webhook import setup_webhook
+
+from bot_app.webhook_config.webhook_start import setup_webhook
+
 
 if __name__ == "__main__":
     try:

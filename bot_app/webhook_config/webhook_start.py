@@ -1,25 +1,23 @@
 import json
-import sys
 from os import getenv
 import logging
+
 from aiohttp import web
-
-from aiogram import Dispatcher, Bot
-from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-
 
 from bot_app.database_config.db_config import setup_database
 from bot_app.trello_config.trello_board import setup_trello_board
-from bot_app.webhook_config.bot_webhook import set_bot_webhook, handle_bot_webhook
+from bot_app.webhook_config.bot_webhook import (
+    set_bot_webhook,
+    handle_bot_webhook,
+    CHAT_ID,
+    bot,
+)
 
 
 BOT_TOKEN = getenv("BOT_TOKEN")
 
 logger = logging.getLogger()
-
-dp = Dispatcher()
-bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 app = web.Application()
 
 
@@ -80,7 +78,7 @@ async def handle_trello_webhook(request):
         elif list_after:
             message += f"<b>New list :</b> {list_after}\n"
 
-        await bot.send_message(chat_id=467362391, text=message, parse_mode=ParseMode.HTML)
+        await bot.send_message(chat_id=CHAT_ID, text=message, parse_mode=ParseMode.HTML)
 
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")
