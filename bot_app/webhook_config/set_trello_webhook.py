@@ -33,15 +33,13 @@ def set_trello_webhook(board_id):
             "description": "Webhook"
         }
     )
-    if response.status_code == 200:
-        logger.info("Webhook created successfully")
-    else:
-        logger.info(f"Error creating webhook: {response.text} \n"
-                    f"key: {TRELLO_API_KEY} \n"
-                    f"idModel: {board_id} \n"
-                    f"callbackURL: {WEBHOOK} \n"
-                    f"token: {TRELLO_TOKEN} \n")
+    return response.status_code
+    # if response.status_code == 200:
+    #     logger.info("Webhook created successfully")
+    # else:
+    #     logger.info(f"Error creating webhook: {response.text} \n"
+    #                 f"key: {TRELLO_API_KEY} \n"
+    #                 f"idModel: {board_id} \n"
+    #                 f"callbackURL: {WEBHOOK} \n"
+    #                 f"token: {TRELLO_TOKEN} \n")
 
-
-if __name__ == "__main__":
-    set_trello_webhook("6648dc71d236110f551d22bd")
