@@ -41,3 +41,7 @@ def set_trello_webhook(board_id):
                     f"idModel: {board_id} \n"
                     f"callbackURL: {WEBHOOK} \n"
                     f"token: {TRELLO_TOKEN} \n")
+
+
+if __name__ == "__main__":
+    set_trello_webhook("6648dc71d236110f551d22bd")

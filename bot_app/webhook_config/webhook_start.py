@@ -34,8 +34,8 @@ async def on_startup(_):
     """
     await set_bot_webhook()
     await setup_database()
-    bord_id = await setup_trello_board()
-    set_trello_webhook(bord_id)
+    # bord_id = await setup_trello_board()
+    # set_trello_webhook(bord_id)
 
 
 async def handle_trello_webhook(request):
