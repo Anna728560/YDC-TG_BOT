@@ -99,6 +99,33 @@ async def setup_trello_board():
     await set_trello_webhook(board_id)
 
 
+# async def set_trello_webhook(board_id):
+#     """
+#     Sets up a webhook for Trello events on the specified board.
+#
+#     :param board_id: The ID of the Trello board to set up the webhook for.
+#     :return: None
+#     """
+#     webhook = WEBHOOK + "/trello-webhook"
+#     response = requests.request(
+#         "POST",
+#         f"https://api.trello.com/1/webhooks",
+#         params={
+#             "key": TRELLO_API_KEY,
+#             "idModel": board_id,
+#             "callbackURL": webhook,
+#             "token": TRELLO_TOKEN,
+#             "description": "Webhook"
+#         }
+#     )
+#     if response.status_code == 200:
+#         logger.info("Webhook created successfully")
+#     else:
+#         logger.info(f"Error creating webhook: {response.text} \n"
+#                     f"key: {TRELLO_API_KEY} \n"
+#                     f"idModel: {board_id} \n"
+#                     f"callbackURL: {webhook} \n"
+#                     f"token: {TRELLO_TOKEN} \n")
 async def set_trello_webhook(board_id):
     """
     Sets up a webhook for Trello events on the specified board.
@@ -107,22 +134,23 @@ async def set_trello_webhook(board_id):
     :return: None
     """
     webhook = WEBHOOK + "/trello-webhook"
-    response = requests.request(
-        "POST",
-        f"https://api.trello.com/1/webhooks",
-        params={
-            "key": TRELLO_API_KEY,
-            "idModel": board_id,
-            "callbackURL": webhook,
-            "token": TRELLO_TOKEN,
-            "description": "Webhook"
-        }
-    )
-    if response.status_code == 200:
-        logger.info("Webhook created successfully")
-    else:
-        logger.info(f"Error creating webhook: {response.text} \n"
-                    f"key: {TRELLO_API_KEY} \n"
-                    f"idModel: {board_id} \n"
-                    f"callbackURL: {webhook} \n"
-                    f"token: {TRELLO_TOKEN} \n")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            f"https://api.trello.com/1/webhooks",
+            params={
+                "key": TRELLO_API_KEY,
+                "idModel": board_id,
+                "callbackURL": webhook,
+                "token": TRELLO_TOKEN,
+                "description": "Webhook"
+            }
+        ) as response:
+            if response.status == 200:
+                logger.info("Webhook created successfully")
+            else:
+                response_text = await response.text()
+                logger.info(f"Error creating webhook: {response_text} \n"
+                            f"key: {TRELLO_API_KEY} \n"
+                            f"idModel: {board_id} \n"
+                            f"callbackURL: {webhook} \n"
+                            f"token: {TRELLO_TOKEN} \n")
