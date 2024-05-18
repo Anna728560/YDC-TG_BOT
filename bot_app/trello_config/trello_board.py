@@ -122,7 +122,7 @@ def set_trello_webhook(board_id):
         logger.info("Webhook created successfully")
     else:
         logger.info(f"Error creating webhook: {response.text} \n"
-                    f"key: {board_id} \n"
+                    f"key: {TRELLO_API_KEY} \n"
                     f"idModel: {board_id} \n"
                     f"callbackURL: {webhook} \n"
                     f"token: {TRELLO_TOKEN} \n")
