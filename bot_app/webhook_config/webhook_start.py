@@ -32,8 +32,6 @@ async def on_startup(_):
     """
     await set_bot_webhook()
     await setup_database()
-    # bord_id = await setup_trello_board()
-    # set_trello_webhook(bord_id)
 
 
 async def handle_trello_webhook(request):
@@ -95,7 +93,7 @@ def setup_webhook():
     :return: The configured web application instance.
     """
     app.router.add_post("/trello-webhook", handle_trello_webhook)
-    app.router.add_get("/trello-webhook", accept_trello_webhook)
+    app.router.add_head("/trello-webhook", accept_trello_webhook)
     app.router.add_post(f"/{BOT_TOKEN}", handle_bot_webhook)
 
     app.on_startup.append(on_startup)

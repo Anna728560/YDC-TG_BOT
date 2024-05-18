@@ -14,6 +14,18 @@ logger = logging.getLogger()
 
 
 async def main():
+    """
+    Sets up and runs the webhook server, configures the Trello board,
+    and sets up a webhook for Trello events.
+
+    This function performs the following steps:
+    1. Configures logging to output to stdout.
+    2. Sets up and starts an aiohttp web server to handle webhook events.
+    3. Configures a Trello board by creating it if it doesn't exist, or retrieving its ID if it does.
+    4. Sets up a webhook on the Trello board to capture events and send them to the configured URL.
+
+    :return: None
+    """
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     app = setup_webhook()
     runner = web.AppRunner(app)
