@@ -1,63 +1,38 @@
 import json
-import logging
 from os import getenv
+import logging
 
+import aiohttp
 from aiohttp import web
-
-from aiogram import Dispatcher, Bot, types
-from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from bot_app.bot_config.bot_handlers import router
 
-
-CHAT_ID = None
-
-WEBHOOK = getenv("WEBHOOK")
-BOT_TOKEN = getenv("BOT_TOKEN")
-WEBHOOK_URI = f"{WEBHOOK}/{BOT_TOKEN}"
-
-logger = logging.getLogger()
-
-dp = Dispatcher()
-dp.include_router(router)
-bot = Bot(
-    token=BOT_TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+from bot_app.database_config.db_config import setup_database
+from bot_app.webhook_config.bot_webhook import (
+    set_bot_webhook,
+    handle_bot_webhook,
+    bot,
 )
 
 
-async def set_bot_webhook():
-    await bot.set_webhook(WEBHOOK_URI)
+BOT_TOKEN = getenv("BOT_TOKEN")
+GROUP_CHAT_ID = getenv("GROUP_CHAT_ID")
+
+logger = logging.getLogger()
+app = web.Application()
 
 
-async def handle_bot_webhook(request):
+async def on_startup(_):
     """
-    Handles incoming webhook requests from the Telegram bot.
+    Performs setup tasks when the application starts.
 
-    :param request: The incoming request object.
-    :return: A web response with a status code
-    indicating the result of the request processing.
+    This function is called when the application starts up.
+    It is responsible for setting up the bot webhook,
+    configuring the database, and initializing the Trello board.
+
+    :return: None
     """
-    global CHAT_ID
-    if request.content_type == "application/json":
-        data = await request.json()
-        token = request.path.split("/")[-1]
-
-        if token == BOT_TOKEN:
-            update = types.Update(**data)
-            CHAT_ID = update.message.chat.id
-            logger.info(f"Set chat id: {CHAT_ID}")
-            await dp.feed_update(bot, update)
-            return web.Response(status=200)
-
-    return web.Response(status=403)
-
-
-async def handle_get(request):
-    """
-    Request handler for GET requests.
-    """
-    return web.Response(text="Hello, World!")
+    await set_bot_webhook()
+    await setup_database()
 
 
 async def handle_trello_webhook(request):
@@ -95,7 +70,12 @@ async def handle_trello_webhook(request):
         elif list_after:
             message += f"<b>New list :</b> {list_after}\n"
 
-        await bot.send_message(chat_id=CHAT_ID, text=message, parse_mode=ParseMode.HTML)
+        async with aiohttp.ClientSession() as session:
+            await bot.send_message(
+                chat_id=GROUP_CHAT_ID,
+                text=message,
+                parse_mode=ParseMode.HTML
+            )
 
     except Exception as e:
         logger.error(f"Error handling Trello webhook: {e}")
@@ -110,4 +90,17 @@ async def accept_trello_webhook(request):
     :param request: The incoming request from Trello webhook.
     :return: A response indicating the acceptance of the request.
     """
-    return web.Response(text="OK")
+    return web.Response(status=200)
+
+
+def setup_webhook():
+    """
+    Sets up the webhook endpoints and registers the startup event handler.
+    :return: The configured web application instance.
+    """
+    app.router.add_post("/trello-webhook", handle_trello_webhook)
+    app.router.add_head("/trello-webhook", accept_trello_webhook)
+    app.router.add_post(f"/{BOT_TOKEN}", handle_bot_webhook)
+
+    app.on_startup.append(on_startup)
+    return app

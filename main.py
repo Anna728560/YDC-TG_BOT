@@ -1,60 +1,57 @@
+import asyncio
 import logging
 import sys
-from os import getenv
 
+import aiohttp
 from aiohttp import web
 
-from bot_app.database_config.db_config import setup_database
 from bot_app.trello_config.trello_board import setup_trello_board
-from bot_app.webhook_config.handlers import (
-    handle_bot_webhook,
-    accept_trello_webhook,
-    handle_trello_webhook,
-    set_bot_webhook,
-    handle_get
-)
+from bot_app.webhook_config.set_trello_webhook import set_trello_webhook
+from bot_app.webhook_config.webhook_start import setup_webhook
 
 
-app = web.Application()
+logger = logging.getLogger()
 
 
-async def on_startup(_):
+async def main():
     """
-    Performs setup tasks when the application starts.
+    Sets up and runs the webhook server, configures the Trello board,
+    and sets up a webhook for Trello events.
 
-    This function is called when the application starts up.
-    It is responsible for setting up the bot webhook,
-    configuring the database, and initializing the Trello board.
+    This function performs the following steps:
+    1. Configures logging to output to stdout.
+    2. Sets up and starts an aiohttp web server to handle webhook events.
+    3. Configures a Trello board by creating it if it doesn't exist, or retrieving its ID if it does.
+    4. Sets up a webhook on the Trello board to capture events and send them to the configured URL.
 
     :return: None
     """
-    await set_bot_webhook()
-    await setup_database()
-    await setup_trello_board()
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    app = setup_webhook()
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, host="0.0.0.0", port=3009)
+    await site.start()
+    logger.info("Webhook server started")
 
+    board_id = await setup_trello_board()
+    logger.info(f"Board ID: {board_id}")
 
-def setup_webhook():
-    """
-    Sets up the webhook endpoints and registers the startup event handler.
-
-    :return: The configured web application instance.
-    """
-    app.router.add_post("/trello-webhook", handle_trello_webhook)
-    app.router.add_head("/trello-webhook", accept_trello_webhook)
-    app.router.add_post(f"/{getenv("BOT_TOKEN")}", handle_bot_webhook)
-    app.router.add_get("/", handle_get)
-    app.on_startup.append(on_startup)
-    return app
+    async with aiohttp.ClientSession() as session:
+        response = await set_trello_webhook(session, board_id)
+        if response.status == 200:
+            logger.info("Webhook created successfully")
+        else:
+            response_text = await response.text()
+            logger.info(f"Error creating webhook: {response_text}")
 
 
 if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
     try:
-        logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-        setup_webhook()
-        web.run_app(
-            app,
-            host="0.0.0.0",
-            port=3009
-        )
+        loop.run_until_complete(main())
+        loop.run_forever()
     except KeyboardInterrupt:
-        print("Shutting down")
+        logger.info("Shutting down")
+    finally:
+        loop.close()

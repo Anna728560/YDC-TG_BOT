@@ -13,7 +13,8 @@ async def cmd_start(message: Message):
 
     await rq.set_user(
         message.from_user.username,
-        message.from_user.id
+        message.from_user.id,
+        message.chat.id
     )
     await message.answer(
         f"👋 Hello, <b>{message.from_user.username}</b>!",
