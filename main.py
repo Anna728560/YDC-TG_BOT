@@ -1,6 +1,8 @@
 import asyncio
 import logging
 import sys
+
+import aiohttp
 from aiohttp import web
 
 from bot_app.trello_config.trello_board import setup_trello_board
@@ -23,12 +25,13 @@ async def main():
     board_id = await setup_trello_board()
     logger.info(f"Board ID: {board_id}")
 
-    response = await set_trello_webhook(board_id)
-    if response.status == 200:
-        logger.info("Webhook created successfully")
-    else:
-        response_text = await response.text()
-        logger.info(f"Error creating webhook: {response_text}")
+    async with aiohttp.ClientSession() as session:
+        response = await set_trello_webhook(session, board_id)
+        if response.status == 200:
+            logger.info("Webhook created successfully")
+        else:
+            response_text = await response.text()
+            logger.info(f"Error creating webhook: {response_text}")
 
 
 if __name__ == "__main__":

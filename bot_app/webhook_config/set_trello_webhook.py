@@ -15,15 +15,15 @@ TRELLO_TOKEN = getenv("TRELLO_TOKEN")
 logger = logging.getLogger()
 
 
-def set_trello_webhook(board_id):
+async def set_trello_webhook(session, board_id):
     """
     Sets up a webhook for Trello events on the specified board.
 
+    :param session: The aiohttp client session.
     :param board_id: The ID of the Trello board to set up the webhook for.
-    :return: None
+    :return: The response of the webhook setup request.
     """
-    response = requests.request(
-        "POST",
+    async with session.post(
         f"https://api.trello.com/1/webhooks",
         params={
             "key": TRELLO_API_KEY,
@@ -32,14 +32,5 @@ def set_trello_webhook(board_id):
             "token": TRELLO_TOKEN,
             "description": "Webhook"
         }
-    )
-    return response.status_code
-    # if response.status_code == 200:
-    #     logger.info("Webhook created successfully")
-    # else:
-    #     logger.info(f"Error creating webhook: {response.text} \n"
-    #                 f"key: {TRELLO_API_KEY} \n"
-    #                 f"idModel: {board_id} \n"
-    #                 f"callbackURL: {WEBHOOK} \n"
-    #                 f"token: {TRELLO_TOKEN} \n")
-
+    ) as response:
+        return response
