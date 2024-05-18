@@ -12,6 +12,7 @@ from bot_app.webhook_config.bot_webhook import (
     handle_bot_webhook,
     bot,
 )
+from bot_app.webhook_config.set_trello_webhook import set_trello_webhook
 
 
 BOT_TOKEN = getenv("BOT_TOKEN")
@@ -33,7 +34,8 @@ async def on_startup(_):
     """
     await set_bot_webhook()
     await setup_database()
-    await setup_trello_board()
+    bord_id = await setup_trello_board()
+    set_trello_webhook(bord_id)
 
 
 async def handle_trello_webhook(request):
