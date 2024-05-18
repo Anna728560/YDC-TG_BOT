@@ -6,13 +6,11 @@ from aiohttp import web
 from aiogram.enums import ParseMode
 
 from bot_app.database_config.db_config import setup_database
-from bot_app.trello_config.trello_board import setup_trello_board
 from bot_app.webhook_config.bot_webhook import (
     set_bot_webhook,
     handle_bot_webhook,
     bot,
 )
-from bot_app.webhook_config.set_trello_webhook import set_trello_webhook
 
 
 BOT_TOKEN = getenv("BOT_TOKEN")
