@@ -36,7 +36,7 @@ pip install -r bot_app/requirements.txt
 ```python
 # Get your own bot-token from the BotFather on Telegram 
 BOT_TOKEN=your_bot_token
-# Create a group where the bot will send messages about Trello updates
+# Create a group where the bot will send messages about Trello updates and add your bot to this group
 GROUP_CHAT_ID=your_tg_group_chat_id
 
 # Set up database
@@ -78,6 +78,6 @@ python main.py
 
 * Programming language: `Python`
 * Telegram bot: `aiogram`
-* Database, db connection: `PastgreSQL`, `asyncpg`
+* Database, db connection: `PostgreSQL`, `asyncpg`
 * Environment variable management: `python-dotenv`
 * HTTP requests: `aiohttp`
