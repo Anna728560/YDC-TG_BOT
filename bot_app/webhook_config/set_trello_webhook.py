@@ -1,3 +1,4 @@
+import json
 import logging
 from os import getenv
 
@@ -63,7 +64,7 @@ async def handle_trello_webhook(request):
         logger.info(f"Received Trello webhook request: {request.method} {request.path}")
 
         data = await request.json()
-        logger.info(f"Received Trello webhook: {json.dumps(data, indent=2)}")
+        logger.info(f"Received Trello webhook: {json.dumps(data.get("action", {}), indent=2)}")
 
         action_type = data["action"]["type"]
         card_name = data["action"]["data"]["card"]["name"]
