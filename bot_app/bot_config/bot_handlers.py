@@ -9,7 +9,6 @@ from aiogram.types import Message
 from dotenv import load_dotenv
 
 from bot_app.database_config import db_requests as rq
-from main import BORD_ID
 
 
 load_dotenv()
@@ -45,6 +44,7 @@ async def cmd_help(message: Message):
 
 @router.message(Command("progress"))
 async def cmd_progress(message: Message):
+    from main import BORD_ID
     if BORD_ID:
         list_id = await get_list_id(BORD_ID, IN_PROGRESS_LIST_NAME)
         if list_id:
