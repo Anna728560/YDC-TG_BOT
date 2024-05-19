@@ -11,6 +11,7 @@ Utilizing webhooks, YDC-TG_BOT ensures real-time updates between your Telegram b
 * Interacts with a Trello board.
 * Automatically creates two columns, "InProgress" and "Done", on the Trello board upon program launch.
 * Utilizes webhooks to notify when users interact with cards.
+* Provides functionality to view the number of tasks in progress and the list of tasks.
 
 ## Installation
 

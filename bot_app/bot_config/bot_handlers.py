@@ -1,7 +1,5 @@
 import logging
-import os
 
-import aiohttp
 from aiogram import Router
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart, Command
