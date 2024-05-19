@@ -11,6 +11,7 @@ from bot_app.webhook_config.webhook_start import setup_webhook
 
 
 logger = logging.getLogger()
+BORD_ID = None
 
 
 async def main():
@@ -26,6 +27,9 @@ async def main():
 
     :return: None
     """
+    global BORD_ID
+    logger.info(f"Set BORD_ID to {BORD_ID}")
+
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     app = setup_webhook()
     runner = web.AppRunner(app)
@@ -35,6 +39,7 @@ async def main():
     logger.info("Webhook server started")
 
     board_id = await setup_trello_board()
+    BORD_ID = board_id
     logger.info(f"Board ID: {board_id}")
 
     async with aiohttp.ClientSession() as session:
