@@ -9,7 +9,7 @@ from aiogram.types import Message
 from dotenv import load_dotenv
 
 from bot_app.database_config import db_requests as rq
-import config
+from bot_app import config
 
 
 load_dotenv()
