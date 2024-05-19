@@ -40,7 +40,7 @@ async def main():
     board_id = await setup_trello_board()
     BORD_ID = board_id
     logger.info(f"Set global BORD_ID to {BORD_ID}")
-    # logger.info(f"Board ID: {board_id}")
+    # logger.info(f"Board ID: {BORD_ID}")
 
     async with aiohttp.ClientSession() as session:
         response = await set_trello_webhook(session, board_id)
