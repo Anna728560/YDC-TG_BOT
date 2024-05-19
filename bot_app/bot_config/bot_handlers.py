@@ -49,10 +49,15 @@ async def cmd_progress(message: Message):
     if config.BORD_ID:
         list_id = await get_list_id(config.BORD_ID, IN_PROGRESS_LIST_NAME)
         if list_id:
-            task_count = await get_in_progress_tasks_count(list_id)
-            await message.answer(f"There are {task_count} tasks in the 'InProgress' column.")
-        else:
-            await message.answer("Could not find the 'InProgress' column.")
+            cards = await get_in_progress_tasks_count(list_id)
+            if cards:
+                card_list = "\n".join([f"- {card['name']}" for card in cards])
+                await message.answer(
+                    f"There are {len(cards)} tasks in the 'InProgress' column:\n{card_list}",
+                    parse_mode=ParseMode.HTML
+                )
+            else:
+                await message.answer("There are no tasks in the 'InProgress' column.")
 
 
 async def get_in_progress_tasks_count(list_id):
@@ -65,7 +70,7 @@ async def get_in_progress_tasks_count(list_id):
             }
         ) as response:
             cards = await response.json()
-            return len(cards)
+            return cards
 
 
 async def get_list_id(board_id, list_name):
