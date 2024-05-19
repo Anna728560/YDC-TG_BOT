@@ -50,8 +50,8 @@ async def main():
         if response.status == 200:
             logger.info("Webhook created successfully")
         else:
-            response_text = await response.text()
-            logger.info(f"Error creating webhook: {response_text}")
+            response_text = await response.read()
+            logger.info(f"Error creating webhook: {response_text.decode()}")
 
 
 if __name__ == "__main__":
