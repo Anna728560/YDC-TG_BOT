@@ -28,7 +28,6 @@ async def main():
     :return: None
     """
     global BORD_ID
-    logger.info(f"Set BORD_ID to {BORD_ID}")
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     app = setup_webhook()
@@ -40,6 +39,7 @@ async def main():
 
     board_id = await setup_trello_board()
     BORD_ID = board_id
+    logger.info(f"Set global BORD_ID to {BORD_ID}")
     logger.info(f"Board ID: {board_id}")
 
     async with aiohttp.ClientSession() as session:
