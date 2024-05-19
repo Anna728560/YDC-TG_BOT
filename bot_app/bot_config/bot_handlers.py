@@ -41,9 +41,10 @@ async def cmd_start(message: Message):
 async def cmd_help(message: Message):
     help_message = """
     Available commands:
+    
     ⛳️ - /start: Start interacting with the bot
     🆘 - /help: Display available commands 
-    🔖 - /progress: Show the number of tasks in the 'InProgress' column 
+    🔖 - /progress: Show tasks in progress 
     """
     await message.answer(help_message)
 
@@ -56,10 +57,10 @@ async def cmd_progress(message: Message):
         if list_id:
             cards = await get_in_progress_tasks_count(list_id)
             if cards:
-                card_list = "\n".join([f"- {card['name']}" for card in cards])
+                card_list = "\n".join([f"⇨ {card['name']}" for card in cards])
                 await message.answer(
-                    f"There are {len(cards)} tasks in the 'InProgress' column:\n{card_list}",
+                    f"<b>📝 In Progress: {len(cards)}</b>\n\n<code>{card_list}</code>",
                     parse_mode=ParseMode.HTML
                 )
             else:
-                await message.answer("There are no tasks in the 'InProgress' column.")
+                await message.answer("<b>There are no tasks in the 'InProgress' column 🙂</b>")
