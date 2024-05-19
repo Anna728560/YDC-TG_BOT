@@ -26,7 +26,6 @@ async def main():
 
     :return: None
     """
-
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     app = setup_webhook()
     runner = web.AppRunner(app)
@@ -35,23 +34,16 @@ async def main():
     await site.start()
     logger.info("Webhook server started")
 
-    # board_id = await setup_trello_board()
-    # config.BORD_ID = board_id
-    # logger.info(f"Set global BORD_ID to {config.BORD_ID}")
-    try:
-        board_id = await setup_trello_board()
-        config.BORD_ID = board_id
-        logger.info(f"Set global BORD_ID to {config.BORD_ID}")
-    except Exception as ex_:
-        logger.info(f"Board already exists, skipping creation. Board ID: {config.BORD_ID}")
+    board_id = await setup_trello_board()
+    config.BORD_ID = board_id
+    logger.info(f"Set global BORD_ID to {config.BORD_ID}")
 
     async with aiohttp.ClientSession() as session:
         response = await set_trello_webhook(session, config.BORD_ID)
         if response.status == 200:
             logger.info("Webhook created successfully")
         else:
-            # response_text = await response.read()
-            logger.info("Error creating webhook")
+            logger.info("Webhook is already set")
 
 
 if __name__ == "__main__":
