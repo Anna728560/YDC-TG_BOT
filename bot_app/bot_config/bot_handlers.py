@@ -41,7 +41,13 @@ async def cmd_start(message: Message):
 
 @router.message(Command("help"))
 async def cmd_help(message: Message):
-    await message.answer("help")
+    help_message = """
+    Available commands:
+    - /start: Start interacting with the bot ⛳️.
+    - /help: Display available commands 🆘.
+    - /progress: Show the number of tasks in the 'InProgress' column 🔖. 
+    """
+    await message.answer(help_message)
 
 
 @router.message(Command("progress"))
