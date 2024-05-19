@@ -27,8 +27,8 @@ async def setup_database() -> None:
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
                 username VARCHAR(255) UNIQUE,
-                user_id INT NOT NULL,
-                chat_id INT NOT NULL
+                user_id BIGINT NOT NULL,
+                chat_id BIGINT NOT NULL
             )
             """
         )
