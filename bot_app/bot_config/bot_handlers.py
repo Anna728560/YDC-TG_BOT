@@ -43,9 +43,9 @@ async def cmd_start(message: Message):
 async def cmd_help(message: Message):
     help_message = """
     Available commands:
-    - /start: Start interacting with the bot ⛳️.
-    - /help: Display available commands 🆘.
-    - /progress: Show the number of tasks in the 'InProgress' column 🔖. 
+    ⛳️ - /start: Start interacting with the bot
+    🆘 - /help: Display available commands 
+    🔖 - /progress: Show the number of tasks in the 'InProgress' column 
     """
     await message.answer(help_message)
 
