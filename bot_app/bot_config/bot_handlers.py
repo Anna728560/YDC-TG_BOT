@@ -9,6 +9,7 @@ from aiogram.types import Message
 from dotenv import load_dotenv
 
 from bot_app.database_config import db_requests as rq
+import config
 
 
 load_dotenv()
@@ -44,10 +45,9 @@ async def cmd_help(message: Message):
 
 @router.message(Command("progress"))
 async def cmd_progress(message: Message):
-    from main import BORD_ID
-    logger.info(f"Board ID: {BORD_ID}")
-    if BORD_ID:
-        list_id = await get_list_id(BORD_ID, IN_PROGRESS_LIST_NAME)
+    logger.info(f"Board ID: {config.BORD_ID}")
+    if config.BORD_ID:
+        list_id = await get_list_id(config.BORD_ID, IN_PROGRESS_LIST_NAME)
         if list_id:
             task_count = await get_in_progress_tasks_count(list_id)
             await message.answer(f"There are {task_count} tasks in the 'InProgress' column.")
