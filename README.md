@@ -13,6 +13,15 @@ Utilizing webhooks, YDC-TG_BOT ensures real-time updates between your Telegram b
 * Utilizes webhooks to notify when users interact with cards.
 * Provides functionality to view the number of tasks in progress and the list of tasks.
 
+## Tools and Technologies Used
+
+* Programming language: `Python`
+* Telegram bot: `aiogram`
+* Database, db connection: `PostgreSQL`, `asyncpg`
+* Environment variable management: `python-dotenv`
+* HTTP requests: `aiohttp`
+* Board management: `Trello API`
+
 ## Installation
 
 1. Clone the repository:
@@ -74,11 +83,3 @@ python main.py
 4. As users interact with the Trello cards, the bot will notify about the interactions.
 
 ![img_1.png](img_1.png)
-
-## Tools and Technologies Used
-
-* Programming language: `Python`
-* Telegram bot: `aiogram`
-* Database, db connection: `PostgreSQL`, `asyncpg`
-* Environment variable management: `python-dotenv`
-* HTTP requests: `aiohttp`

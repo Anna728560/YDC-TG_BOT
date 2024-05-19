@@ -76,17 +76,17 @@ async def handle_trello_webhook(request):
         member_creator = data["action"]["memberCreator"]["fullName"]
 
         message = (f"***<b>New action on Trello</b>***\n\n"
-                   f"<b>Type:</b>  {action_type}\n"
-                   f"<b>Card:</b>  {card_name}\n"
-                   f"<b>Board:</b> {board_name}\n"
-                   f"<b>By:</b>    {member_creator}\n\n")
+                   f"<code>TYPE:  {action_type}\n"
+                   f"CARD:  {card_name}\n"
+                   f"BOARD: {board_name}\n"
+                   f"BY:    {member_creator}\n\n</code>")
 
         if list_before and list_after:
-            message += f"<b>FROM:</b> {list_before}\n<b>TO:</b> {list_after}\n"
+            message += f"<code>FROM: {list_before}\nTO: {list_after}\n</code>"
         elif list_before:
-            message += f"<b>Previous list :</b> {list_before}\n"
+            message += f"<code>Previous list : {list_before}\n</code>"
         elif list_after:
-            message += f"<b>New list :</b> {list_after}\n"
+            message += f"<code>New list : {list_after}\n</code>"
 
         async with aiohttp.ClientSession() as session:
             await bot.send_message(

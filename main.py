@@ -13,7 +13,6 @@ from bot_app import config
 logger = logging.getLogger()
 
 
-
 async def main():
     """
     Sets up and runs the webhook server, configures the Trello board,
@@ -27,7 +26,6 @@ async def main():
 
     :return: None
     """
-
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     app = setup_webhook()
     runner = web.AppRunner(app)
@@ -41,12 +39,11 @@ async def main():
     logger.info(f"Set global BORD_ID to {config.BORD_ID}")
 
     async with aiohttp.ClientSession() as session:
-        response = await set_trello_webhook(session, board_id)
+        response = await set_trello_webhook(session, config.BORD_ID)
         if response.status == 200:
             logger.info("Webhook created successfully")
         else:
-            response_text = await response.text()
-            logger.info(f"Error creating webhook: {response_text}")
+            logger.info("Webhook is already set")
 
 
 if __name__ == "__main__":
