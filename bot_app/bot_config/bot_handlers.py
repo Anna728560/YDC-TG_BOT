@@ -10,16 +10,17 @@ from dotenv import load_dotenv
 
 from bot_app.database_config import db_requests as rq
 from bot_app import config
+from bot_app.trello_config.trello_board import (
+    get_in_progress_tasks_count,
+    get_list_id
+)
 
 
 load_dotenv()
-
 router = Router()
 
 IN_PROGRESS_LIST_NAME = "InProgress"
-TRELLO_API_KEY = os.getenv("TRELLO_API_KEY")
-TRELLO_TOKEN = os.getenv("TRELLO_TOKEN")
-WEBHOOK = os.getenv("WEBHOOK")
+
 
 logger = logging.getLogger()
 
@@ -58,32 +59,3 @@ async def cmd_progress(message: Message):
                 )
             else:
                 await message.answer("There are no tasks in the 'InProgress' column.")
-
-
-async def get_in_progress_tasks_count(list_id):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            f"https://api.trello.com/1/lists/{list_id}/cards",
-            params={
-                "key": TRELLO_API_KEY,
-                "token": TRELLO_TOKEN
-            }
-        ) as response:
-            cards = await response.json()
-            return cards
-
-
-async def get_list_id(board_id, list_name):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            f"https://api.trello.com/1/boards/{board_id}/lists",
-            params={
-                "key": TRELLO_API_KEY,
-                "token": TRELLO_TOKEN
-            }
-        ) as response:
-            lists = await response.json()
-            for lst in lists:
-                if lst["name"] == list_name:
-                    return lst["id"]
-            return None
