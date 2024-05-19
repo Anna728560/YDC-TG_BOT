@@ -1,3 +1,4 @@
+import json
 import logging
 from os import getenv
 
@@ -34,6 +35,7 @@ async def handle_bot_webhook(request):
     """
     if request.content_type == "application/json":
         data = await request.json()
+        logger.info(f"Received BOT webhook: {json.dumps(data, indent=2)}")
         token = request.path.split("/")[-1]
 
         if token == BOT_TOKEN:

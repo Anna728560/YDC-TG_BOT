@@ -8,9 +8,10 @@ from aiohttp import web
 from bot_app.trello_config.trello_board import setup_trello_board
 from bot_app.webhook_config.set_trello_webhook import set_trello_webhook
 from bot_app.webhook_config.webhook_start import setup_webhook
-
+from bot_app import config
 
 logger = logging.getLogger()
+
 
 
 async def main():
@@ -26,6 +27,7 @@ async def main():
 
     :return: None
     """
+
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     app = setup_webhook()
     runner = web.AppRunner(app)
@@ -35,7 +37,8 @@ async def main():
     logger.info("Webhook server started")
 
     board_id = await setup_trello_board()
-    logger.info(f"Board ID: {board_id}")
+    config.BORD_ID = board_id
+    logger.info(f"Set global BORD_ID to {config.BORD_ID}")
 
     async with aiohttp.ClientSession() as session:
         response = await set_trello_webhook(session, board_id)

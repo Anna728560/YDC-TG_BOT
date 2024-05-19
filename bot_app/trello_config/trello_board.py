@@ -97,3 +97,48 @@ async def setup_trello_board():
 
     return board_id
 
+
+async def get_in_progress_tasks_count(list_id):
+    """
+    Retrieves the tasks in the specified Trello list.
+
+    :param list_id: The ID of the Trello list to fetch tasks from.
+    :type list_id: str
+    :return: A list of tasks in the specified list.
+    :rtype: list
+    """
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            f"https://api.trello.com/1/lists/{list_id}/cards",
+            params={
+                "key": TRELLO_API_KEY,
+                "token": TRELLO_TOKEN
+            }
+        ) as response:
+            cards = await response.json()
+            return cards
+
+
+async def get_list_id(board_id, list_name):
+    """
+    Retrieves the ID of a Trello list with the specified name from a given board.
+
+    :param board_id: The ID of the Trello board to search for the list.
+    :type board_id: str
+    :param list_name: The name of the Trello list to find.
+    :type list_name: str
+    :return: The ID of the list if found, otherwise None.
+    """
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            f"https://api.trello.com/1/boards/{board_id}/lists",
+            params={
+                "key": TRELLO_API_KEY,
+                "token": TRELLO_TOKEN
+            }
+        ) as response:
+            lists = await response.json()
+            for lst in lists:
+                if lst["name"] == list_name:
+                    return lst["id"]
+            return None
